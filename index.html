@@ -1,0 +1,98 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Visitor</title>
+    <link rel="icon" href="">
+</head>
+
+<body onload="loaded()">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <div class="container">
+        <h1 class="text-center mt-3 mb-3">Księga gości</h1>
+        <div class="card">
+            <div class="card-header">Nowy wpis</div>
+            <div class="card-body">
+                <form method="POST" action="https://visitor.karol.gay/api/submit" enctype="multipart/form-data">
+
+                    <div class="mb-3">
+                        <label>Imię:</label>
+                        <input required="required" type="text" name="name" id="name" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label>Temat:</label>
+                        <input required="required" type="text" name="subject" id="subject" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label>Treść:</label>
+                        <textarea type="text" name="text" id="text" class="form-control" rows="5"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <input required="required" type="submit" name="submit_button" class="btn btn-primary" value="Wyślij" />
+                    </div>
+                </form>
+            </div>
+
+
+
+
+
+
+            </form>
+        </div><br>
+        <div class="card">
+            <div class="card-header">Liczba gości na stronie</div>
+            <div class="card-body">
+                <label id="guestNumber"></label>
+            </div>
+        </div><br>
+        <div class="card">
+            <div class="card-header">Wpisy gości</div>
+            <div class="card-body" id="guestEntries">
+
+
+
+
+            </div>
+        </div><br>
+        <div class="card">
+            <div class="card-header">Kod źródłowy</div>
+            <div class="card-body"><a href="https://github.com/karolpeszek/visitor-client" target="_blank"><label>Klient</label></a><br><a href="https://github.com/karolpeszek/visitor-server" target="_blank"><label>Serwer</label></a>
+            </div>
+        </div>
+        <br>
+    </div>
+    <script>
+        async function loaded() {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", "https://visitor.karol.gay/api/list", false); // false for synchronous request
+            xmlHttp.send(null);
+            document.getElementById('guestEntries').innerHTML = xmlHttp.responseText;
+
+
+        }
+        const ws = new WebSocket('wss://visitor.karol.gay/socket');
+        ws.addEventListener("open", () => {
+            console.log('connected')
+        })
+        ws.addEventListener("message", message => {
+            console.log(message.data);
+
+            if (message.data == "GUEST_UPDATE") loaded();
+            else
+                document.getElementById('guestNumber').innerHTML = message.data;
+        })
+    </script>
+
+</body>
+
+
+
+</html>
+</body>
+
+
+
+</html>
